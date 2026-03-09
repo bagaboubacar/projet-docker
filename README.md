@@ -1,127 +1,128 @@
 
-# PayMyBuddy - Financial Transaction Application
+# PayMyBuddy – DevOps Docker POC
 
-This repository contains the *PayMyBuddy* application, which allows users to manage financial transactions. It includes a Spring Boot backend and MySQL database.
+PayMyBuddy est une application de gestion de transactions financières entre amis.
+Ce projet est un Proof of Concept (POC) visant à améliorer le déploiement et la gestion de l’application grâce aux pratiques DevOps et à la conteneurisation avec Docker.
 
-**![PayMyBuddy Overview](https://lh7-rt.googleusercontent.com/docsz/AD_4nXf0fGeMjotdY0KzJL13cmGhXad3GM_kn7OSXZJ4CCSQ89zZTlrhBVVi91QjRMgVeszmUMAMAgyavzr4VyQ9YOAUiWmL2sF6aVQYiJPLZfztxv7ERNsIra2O_2SYIX5ZFY5eOARMeI2qnOwrIymuyJnvtuYs?key=mLqAl_ccMoG4hHcRzSYKpw)**
-
----
+L’application est composée :
+-	d’un backend Spring Boot
+-	d’une base de données MySQL
+-	d’une orchestration via Docker Compose
+-	d’un déploiement d’images via un Docker Registry privé
 
 ## Objectives
 
-This POC demonstrates the deployment of the *PayMyBuddy* app using Docker containers, with a focus on:
+Ce projet a pour objectifs :
+-	Dockeriser une application backend Java
+-	Externaliser la base de données MySQL
+-	Mettre en place une infrastructure Infrastructure as Code
+-	Sécuriser la configuration via des variables d’environnement
+-	Versionner et déployer les images via un registry privé
 
-- Improving deployment processes
-- Versioning infrastructure releases
-- Implementing best practices for Docker
-- Using Infrastructure as Code
+## Architecture
 
-### Key Themes:
+<img width="205" height="273" alt="Architecture" src="https://github.com/user-attachments/assets/358eae5b-21df-4b67-b2ea-7f52534cf55a" />
 
-- Dockerization of the backend and database
-- Orchestration with Docker Compose
-- Securing the deployment process
-- Deploying and managing Docker images via Docker Registry
+## Technologies Used
+-	Java 17
+-	Spring Boot
+-	MySQL 8
+-	Docker
+-	Docker Compose
+-	Docker Registry
 
----
+## Project Structure
 
-## Context
+<img width="203" height="218" alt="structure_projet" src="https://github.com/user-attachments/assets/0919c7f3-4f30-41e7-b36b-54fb68ce63bd" />
 
-*PayMyBuddy* is an application for managing financial transactions between friends. The current infrastructure is tightly coupled and manually deployed, resulting in inefficiencies. We aim to improve scalability and streamline the deployment process using Docker and container orchestration.
+## Dockerfile (Backend)
+Le backend est dockerisé à l’aide de l’image amazoncorretto:17-alpine.
 
----
+Le fichier JAR est copié dans le conteneur et exposé sur le port 8080.
 
-## Infrastructure
+Principes :
+-	Image légère
+-	Port exposé
+-	Commande de démarrage unique
 
-The infrastructure will run on a Docker-enabled server with **Ubuntu 20.04**. This proof-of-concept (POC) includes containerizing the Spring Boot backend and MySQL database and automating deployment using Docker Compose.
+## Database Initialization
+La base MySQL est initialisée automatiquement au premier démarrage grâce au dossier initdb.
+Le scripts SQL sont montés dans :
 
-### Components:
+/docker-entrypoint-initdb.d
 
-- **Backend (Spring Boot):** Manages user data and transactions
-- **Database (MySQL):** Stores users, transactions, and account details
-- **Orchestration:** Uses Docker Compose to manage the entire application stack
+Ils permettent :
+-	la création des tables
+-	l’initialisation des données
 
----
+## Security & Configuration
+Les informations sensibles (identifiants, mots de passe) ne sont pas stockées en dur.
 
-## Application
-
-*PayMyBuddy* is divided into two main services:
-
-1. **Backend Service (Spring Boot):**
-   - Exposes an API to handle transactions and user interactions
-   - Connects to a MySQL database for persistent storage
-
-2. **Database Service (MySQL):**
-   - Stores user and transaction data
-   - Exposed on port 3306 for the backend to connect
-
-### Build and Test (7 Points)
-
-You will build and deploy the backend and MySQL database in Docker containers.
-
-#### Database Initialization
-The database schema is initialized using the initdb directory, which contains SQL scripts to set up the required tables and initial data. These scripts are automatically executed when the MySQL container starts.
-
-#### Extra Challenges (Optional)
-Secure Sensitive Information: Avoid hardcoding sensitive data such as database credentials directly in your Dockerfile. Instead, use Docker secrets or .env files to manage them securely. These environment variables can be set dynamically at runtime to protect sensitive information:
-
-```bash
-# Environment variables for database connection
-# Do not hardcode credentials; use secrets or environment files instead.
-
-# ENV SPRING_DATASOURCE_USERNAME  # Database username
-# ENV SPRING_DATASOURCE_PASSWORD  # Database password
-# ENV SPRING_DATASOURCE_URL       # Database connection URL
-```
-
-User Authentication: Add user authentication to the backend to restrict access to the API and transactions.
-
-1. **Backend Dockerfile:**
-   - Base image: `amazoncorretto:17-alpine`
-   - Copy backend JAR file and expose port 8080
-   - CMD: Run the backend service
-   
-2. **Database Setup:**
-   - Use MySQL as a Docker service, mounting the data to a persistent volume
-   - Expose port 3306
-
-### Orchestration with Docker Compose (5 Points)
-
-The `docker-compose.yml` will deploy both services:
-- **paymybuddy-backend:** Runs the Spring Boot application.
-- **paymybuddy-db:** MySQL database to handle user data and transactions.
-
-Key features:
-- Services depend on each other for smooth orchestration
-- Volumes for persistent storage
-- Environment variables for secure configuration
-
----
-
-## Docker Registry (4 Points)
-
-You need to push your built images to a private Docker registry and deploy the images using Docker Compose.
-
-### Steps:
-1. Build the images for both backend and MySQL.
-2. Deploy a private Docker registry.
-3. Push your images to the registry and use them in `docker-compose.yml`.
-
----
-
-## Delivery (4 Points)
-
-For your delivery, provide the following in your repository:
-
-- **README** with screenshots and explanations.
-- **Dockerfile** and **docker-compose.yml**.
-- **Screenshots** showing the application running.
+Elles sont externalisées dans un fichier .env :
+- MYSQL_DATABASE
+-	MYSQL_USER
+-	MYSQL_PASSWORD
+-	MYSQL_ROOT_PASSWORD
+-	SPRING_DATASOURCE_URL
+-	SPRING_DATASOURCE_USERNAME
+-	SPRING_DATASOURCE_PASSWORD
   
-Your delivery will be evaluated based on:
-- Quality of explanations and screenshots
-- Repository structure and clarity
+Cela permet :
+-	une meilleure sécurité
+-	une configuration adaptable selon l’environnement
 
-**Good luck!**
+## Docker Compose Orchestration
+Docker Compose permet de :
+-	Déployer les services backend et base de données
+-	Gérer le réseau interne
+-	Définir les dépendances (depends_on)
+-	Assurer la persistance des données via des volumes
+Commande de lancement :
+```
+docker-compose up --build
+```
+Accès à l’application :
+http://localhost:8080
 
-**![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXc-CjKFk4NY9yXiR1oheHsFR4YYn4HcD_0A6fgd11tHcT3p1U2RKXvIs6HflkvuLOOUzFxzxYCjDno2f1p6_q31dDE9AaUoEx1pi0Fs9ApJG2czL-88xrx3XO-oEP5ZXXsyXw0GKjA2W0A5q1Bk979SB1M?key=mLqAl_ccMoG4hHcRzSYKpw)**
+## Docker Registry
+Un registry privé local est utilisé pour stocker les images Docker.
+
+Lancement du registry :
+```
+docker run -d -p 5000:5000 --name registry registry:2
+```
+Build, tag et push des images :
+```
+docker build -t paymybuddy-backend:1.0
+docker tag paymybuddy-backend:1.0 localhost:5000/paymybuddy-backend:V1
+docker push localhost:5000/paymybuddy-backend:V1
+```
+Les images sont ensuite utilisées directement dans docker-compose_Registry.yml.
+
+## Screenshots
+
+-	Conteneurs en cours d’exécution
+
+
+<img width="945" height="159" alt="image" src="https://github.com/user-attachments/assets/2d92dd0f-52a2-4f3f-a528-20cbe7d79bc7" />
+
+-	Accès à l’application via navigateur
+
+<img width="945" height="446" alt="image" src="https://github.com/user-attachments/assets/c96b6f62-49ef-4bb9-9118-f0d6486ae0e1" />
+
+-	Base de données initialisée
+
+<img width="409" height="367" alt="image" src="https://github.com/user-attachments/assets/6ca058b1-2bcf-47d0-a815-8ad833a24d1f" />
+
+-	Registry contenant les images
+
+ <img width="945" height="71" alt="image" src="https://github.com/user-attachments/assets/937608a1-fb97-49c7-af47-c3af10e8e377" />
+
+## Conclusion
+Ce projet démontre la mise en place d’une infrastructure Dockerisée moderne permettant :
+-	un déploiement reproductible
+-	une meilleure maintenabilité
+-	une séparation claire entre build et run
+-	une approche DevOps orientée production
+
 
