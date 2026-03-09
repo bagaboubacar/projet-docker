@@ -1,0 +1,10 @@
+/home/lab/mini-projet-docker/src/test/java/com/paymybuddy/paymybuddy/service/BankAccountServiceTest.java
+/home/lab/mini-projet-docker/src/test/java/com/paymybuddy/paymybuddy/repository/BankAccountRepositoryIT.java
+/home/lab/mini-projet-docker/src/test/java/com/paymybuddy/paymybuddy/service/UserServiceIT.java
+/home/lab/mini-projet-docker/src/test/java/com/paymybuddy/paymybuddy/repository/TransactionRepositoryIT.java
+/home/lab/mini-projet-docker/src/test/java/com/paymybuddy/paymybuddy/repository/ConnectionRepositoryIT.java
+/home/lab/mini-projet-docker/src/test/java/com/paymybuddy/paymybuddy/repository/UserRepositoryIT.java
+/home/lab/mini-projet-docker/src/test/java/com/paymybuddy/paymybuddy/PayMyBuddyApplicationTests.java
+/home/lab/mini-projet-docker/src/test/java/com/paymybuddy/paymybuddy/service/UserServiceTest.java
+/home/lab/mini-projet-docker/src/test/java/com/paymybuddy/paymybuddy/service/TransactionServiceTest.java
+/home/lab/mini-projet-docker/src/test/java/com/paymybuddy/paymybuddy/service/ConnectionServiceTest.java
